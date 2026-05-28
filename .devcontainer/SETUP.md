@@ -74,7 +74,26 @@ brew install colima docker docker-compose devcontainer
 
 ## 3. Configure Colima
 
-Open `~/.colima/default/colima.yaml`. If it doesn't exist, run `colima start` once to generate it, then `colima stop`.
+These steps apply to every Colima instance you use — the default one and any named instances (e.g. `colima start complete-css`). Each instance has its own config file and needs to be configured separately.
+
+Open the config for the instance you're setting up:
+
+```bash
+# Default instance
+~/.colima/default/colima.yaml
+
+# Named instance (e.g. complete-css)
+~/.colima/complete-css/colima.yaml
+```
+
+If the file doesn't exist, start the instance once to generate it, then stop it:
+
+```bash
+colima start            # default
+colima start complete-css  # named
+colima stop
+colima stop complete-css
+```
 
 **Set `forwardAgent` to `true`:**
 
@@ -101,6 +120,13 @@ provision:
       export SSH_AUTH_SOCK=/tmp/ssh-agent.sock
       EOF
       grep -q 'ssh_agent.sh' "$HOME/.profile" || echo '. $HOME/.ssh_agent.sh' >> "$HOME/.profile"
+```
+
+Repeat for each named instance. If you've already started an instance without these settings, stop it, update the config, then restart it with the `--provision` flag to force the script to re-run:
+
+```bash
+colima stop complete-css
+colima start complete-css --provision
 ```
 
 This forwards your Mac's SSH agent into the Colima VM and creates a stable socket at `/tmp/ssh-agent.sock` that the container binds.
