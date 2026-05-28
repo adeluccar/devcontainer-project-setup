@@ -1,0 +1,24 @@
+{
+  "name": "devcontainer",
+  // Replace with an image suited for your project's stack
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    }
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.gitconfig,target=/tmp/host-gitconfig,type=bind,readonly",
+    "source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,readonly",
+    "source=/tmp/ssh-agent.sock,target=/tmp/ssh-agent.sock,type=bind",
+    "source=${localEnv:HOME}/.config/gh,target=/home/node/.config/gh,type=bind,consistency=cached"
+  ],
+  "remoteEnv": {
+    "SSH_AUTH_SOCK": "/tmp/ssh-agent.sock"
+  },
+  "postCreateCommand": "curl -fsSL https://claude.ai/install.sh | bash",
+  "postStartCommand": "cp /tmp/host-gitconfig /home/node/.gitconfig && git config --global --add safe.directory ${containerWorkspaceFolder}"
+}
